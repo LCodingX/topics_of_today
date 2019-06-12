@@ -1,0 +1,28 @@
+<html>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}" />  
+    {% block bootstrap %}
+    {% endblock %}
+    {% if title %}
+        <title>{{title}}</title>
+    {% else %}
+        <title>Page</title>
+    {% endif %}
+    <div class="navbar">
+        {% block navbar %}
+        {% endblock %}
+    </div>
+    <body>
+        <div class="container">
+            <div class="content-section">
+                {% block body %} {% endblock %}
+            </div>
+            <div class="sidebar">
+                {% block sidebar %} {% endblock %}
+            </div>
+        </div>
+    </body>
+    <footer>
+        <p>Website Created by Vince Cimino</p>
+    </footer>
+</html>

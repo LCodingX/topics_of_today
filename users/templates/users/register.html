@@ -1,0 +1,17 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block toptxt %}
+Register
+{% endblock %}
+{% block bod %}
+        <form action="/users/register/" method="post" class="usersform">
+            {{ form.non_field_errors }}
+            {% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" value="OK" style="margin-bottom: 30px;">
+            <br>
+            <small>
+                <a href="{%url 'users-login'%}">Already have an account?</a>
+            </small>
+        </form>
+{% endblock %}

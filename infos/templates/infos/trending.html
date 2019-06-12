@@ -1,0 +1,63 @@
+{% extends "infos/base.html" %}
+{% block navbar %}
+    <div></div>
+    <a href="/Topics" id="infos-topics" class="nav-a left">Topics</a>
+    <a href="{%url 'infos-trending'%}" id="Trending" class="nav-a left">Trending</a>
+    {% if not user.is_authenticated %}
+    <a href="{%url 'users-register'%}"  id="Register" class="nav-a right">Register</a>
+    <a href="{%url 'users-login'%}" id="Login" class="nav-a right">Login</a>
+    {% else %}
+    <a href="/users/logout"  id="Logout" class="nav-a right">Logout</a>
+    <a href="{%url 'users-profile'%}" id="Profile" class="nav-a right">Profile</a>
+    {% endif %}
+    <div class="search">
+            <form action="/" method="post">
+                <input type="text" placeholder="Search..." name="search" id="search-bar">
+                <button type="submit">Submit</button>
+            </form>
+    </div>  
+{% endblock %}
+{% block body %}
+{% for post in posts %}
+<div class="listpost">
+    <div class="listpostauthor">
+                <p>{{post.author.username}}</p>
+                <div class="small-image-cropper">
+                    <img src='{{post.author.profile.image.url}}' class="profile-pic">
+                </div>
+                <small>
+                    on {{post.date_created|date:"M/d H:m"}}
+                </small>
+    </div>
+    <div class="listpostbody">
+        <h1>{{post.title}}</h1>
+        <br>
+        <p>{{post.content}}</p>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+{% block sidebar %}
+    {% if user.is_authenticated %}
+        <div class="profile-sidebar">
+            <div class="author">
+                <p>{{user.username}}</p>
+                <div class="image-cropper">
+                    <img src='{{user.profile.image.url}}' class="profile-pic">
+                </div>
+            </div>
+            <div class="rect" id="sidebar-inbox">Inbox<br>
+                <div class="red-circle">
+                    <div class="inner-circle"><p>0</p></div>
+                </div>
+            </div>
+            <div class="rect" id="sidebar-topics">
+                Top Topics:<br>
+                Politics<br>
+                Technology<br>
+                Science
+            </div>
+            <div class="rect" id="create-topic">Create Topic</div>
+        </div>
+    {% endif %}
+{% endblock %}

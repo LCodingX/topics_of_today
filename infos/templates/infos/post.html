@@ -1,0 +1,44 @@
+{% extends "infos/base.html" %}
+{% block body %}
+<div class="post wrapper">
+    <div class="post-author">
+        <p>{{post.author.username}}</p>
+        <small>{{post.author.email}}</small>
+        <div class="image-cropper">
+            <img src='{{post.author.profile.image.url}}' class="profile-pic">
+        </div>
+        <small>
+            Created on {{post.date_created}}
+        </small>
+    </div>
+    <div class="post-title">
+        <h1>{{post.title}}</h1>
+        <br>
+        {{post.content}}
+    </div>
+</div>
+{% endblock %}
+{% block sidebar %}
+    {% if user.is_authenticated %}
+        <div class="profile-sidebar">
+            <div class="author">
+                <p>{{user.username}}</p>
+                <div class="image-cropper">
+                    <img src='{{user.profile.image.url}}' class="profile-pic">
+                </div>
+            </div>
+            <div class="rect" id="sidebar-inbox">Inbox<br>
+                <div class="red-circle">
+                    <div class="inner-circle"><p>0</p></div>
+                </div>
+            </div>
+            <div class="rect" id="sidebar-topics">
+                Top Topics:<br>
+                Politics<br>
+                Technology<br>
+                Science
+            </div>
+            <div class="rect" id="create-topic">Create Topic</div>
+        </div>
+    {% endif %}
+{% endblock %}

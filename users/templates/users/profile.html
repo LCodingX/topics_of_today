@@ -1,0 +1,40 @@
+{% extends "infos/base.html" %}
+{% load crispy_forms_tags %}
+{%block bootstrap%}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+{%endblock%}
+{% block body %}
+        <form method="POST" enctype="multipart/form-data">
+            <div class="profile-form">
+            {{ form.non_field_errors }}
+            {% csrf_token %}
+            {{p_form|crispy}}
+            {{u_form|crispy}}
+            <input type="submit" value="Update" style="margin-bottom:30px;">
+            </div>
+        </form>
+{% endblock %}
+{% block sidebar %}
+    {% if user.is_authenticated %}
+        <div class="profile-sidebar">
+            <div class="author">
+                <p>{{user.username}}</p>
+                <div class="image-cropper">
+                    <img src='{{user.profile.image.url}}' class="profile-pic">
+                </div>
+            </div>
+            <div class="rect" id="sidebar-inbox">Inbox<br>
+                <div class="red-circle">
+                    <div class="inner-circle"><p>0</p></div>
+                </div>
+            </div>
+            <div class="rect" id="sidebar-topics">
+                Top Topics:<br>
+                Politics<br>
+                Technology<br>
+                Science
+            </div>
+            <div class="rect" id="create-topic">Create Topic</div>
+        </div>
+    {% endif %}
+{% endblock %}

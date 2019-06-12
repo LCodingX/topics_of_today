@@ -1,0 +1,22 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+<title>Login</title>
+{% endblock %}
+{% block toptxt %}
+Login
+{% endblock %}
+{% block bod %}
+<div class="form-group">
+        <form action="{% url 'users-login' %}" method="post" class="loginform usersform">
+            {{ form.non_field_errors }}
+            {% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" value="OK" style="margin-bottom:30px;">
+            <br>
+            <small>
+                <a href="/users/register/">Not have an account?</a>
+            </small>
+        </form>
+</div>
+{% endblock %}
