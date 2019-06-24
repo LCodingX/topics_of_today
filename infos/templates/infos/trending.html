@@ -1,18 +1,9 @@
 {% extends "infos/base.html" %}
 {% block navbar %}
-    <div></div>
-    <a href="/Topics" id="infos-topics" class="nav-a left">Topics</a>
-    <a href="{%url 'infos-trending'%}" id="Trending" class="nav-a left">Trending</a>
-    {% if not user.is_authenticated %}
-    <a href="{%url 'users-register'%}"  id="Register" class="nav-a right">Register</a>
-    <a href="{%url 'users-login'%}" id="Login" class="nav-a right">Login</a>
-    {% else %}
-    <a href="/users/logout"  id="Logout" class="nav-a right">Logout</a>
-    <a href="{%url 'users-profile'%}" id="Profile" class="nav-a right">Profile</a>
-    {% endif %}
     <div class="search">
-            <form action="/" method="post">
-                <input type="text" placeholder="Search..." name="search" id="search-bar">
+            <form action="/search/posts/" method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Search Posts" name="search" id="search-bar">
                 <button type="submit">Submit</button>
             </form>
     </div>  
@@ -25,17 +16,38 @@
                 <div class="small-image-cropper">
                     <img src='{{post.author.profile.image.url}}' class="profile-pic">
                 </div>
-                <small>
+                <small style="display:block;">
                     on {{post.date_created|date:"M/d H:m"}}
                 </small>
     </div>
     <div class="listpostbody">
-        <h1>{{post.title}}</h1>
+        <p>on {{post.topic.name}}</p>
+        <h1><a href="/Post/{{post.id}}/">{{post.title}}</a></h1>
         <br>
-        <p>{{post.content}}</p>
+        <p style="text-align: center;">
+        <strong> 
+            {% if post.opinion == -1 %}
+            {% elif post.opinion == 0 %}
+            OPINION 1: {{post.topic.desc1}}
+            {% elif post.opinion == 1 %}
+            OPINION 2: {{post.topic.desc2}}
+            {% else %}
+            OPINION 3: {{post.topic.desc3}}
+            {% endif %}
+        </strong><br>{{post.content|truncatewords:50}}</p>
     </div>
 </div>
 {% endfor %}
+{% if posts.has_previous %}
+<strong style="float: left;">
+    <a href="?page={{ posts.previous_page_number }}">Previous</a>
+</strong>
+{% endif %}
+{% if posts.has_next %}
+<strong style="float: right;">
+    <a href="?page={{ posts.next_page_number }}">Next</a>
+</strong>
+{% endif %}
 {% endblock %}
 {% block sidebar %}
     {% if user.is_authenticated %}
@@ -46,18 +58,28 @@
                     <img src='{{user.profile.image.url}}' class="profile-pic">
                 </div>
             </div>
-            <div class="rect" id="sidebar-inbox">Inbox<br>
+            <div class="rect" id="sidebar-inbox" onclick="
+            window.location.href='/users/profile/inbox/'
+            ">Inbox<br>
                 <div class="red-circle">
-                    <div class="inner-circle"><p>0</p></div>
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
                 </div>
             </div>
-            <div class="rect" id="sidebar-topics">
-                Top Topics:<br>
-                Politics<br>
-                Technology<br>
-                Science
-            </div>
-            <div class="rect" id="create-topic">Create Topic</div>
+            <div id="sidebar-topics">
+                    Your Top Topics:
+                    <br>
+                    <div class="rect" onclick="window.location.href = 
+                    '/Topic/{{topic1.id}}/?page=1'">{{topic1.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{topic2.id}}/?page=1'">{{topic2.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{topic3.id}}/?page=1'">{{topic3.name}}</div>
+                </div>
+                <div class="rect" id="create-topic" onclick=
+                "window.location.href = '/Topics/create/'">
+                Create Topic</div>
         </div>
     {% endif %}
 {% endblock %}

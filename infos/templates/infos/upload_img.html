@@ -1,0 +1,57 @@
+{% extends "infos/base.html" %}
+{% load crispy_forms_tags %}
+{%block bootstrap%}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+{%endblock%}
+{% block title %}
+Create Post in Infosum
+{% endblock%}
+{% block navbar %}
+    <div class="search">
+            <form action="/search/all/" method="post">
+                <input type="text" placeholder="Search Infosum" name="search" id="search-bar">
+                <button type="submit">Submit</button>
+            </form>
+    </div>  
+{% endblock %}
+{% block sidebar %}
+    {% if user.is_authenticated %}
+        <div class="profile-sidebar">
+            <div class="author">
+                <p>{{user.username}}</p>
+                <div class="image-cropper">
+                    <img src='{{user.profile.image.url}}' class="profile-pic">
+                </div>
+            </div>
+            <div class="rect" id="sidebar-inbox" onclick="
+            window.location.href='/users/profile/inbox/'
+            ">Inbox<br>
+                <div class="red-circle">
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
+                </div>
+            </div>
+            <div id="sidebar-topics">
+                    Your Top Topics:
+                    <br>
+                    <div class="rect" onclick="window.location.href = 
+                    '/Topic/{{user.profile.topic1.id}}'">{{user.profile.topic1.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic2.id}}/?page=1'">{{user.profile.topic2.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic3.id}}/?page=1'">{{user.profile.topic3.name}}</div>
+                </div>
+            <div class="rect" id="create-topic">Create Topic</div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block body %}
+<form method="POST" enctype="multipart/form-data" action="{{ request.get_full_path }}">
+    <p>NOTICE: you can upload multiple images to one post</p>
+    {{ form.non_field_errors }}
+    {% csrf_token %}
+    {{form|crispy}}
+    <input type="submit" value="Upload Image" style="margin-bottom:30px;">
+</form>
+{% endblock %}

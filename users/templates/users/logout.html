@@ -1,5 +1,8 @@
-{% extends "users/base.html" %}
-{% block bod %}
+{% extends "infos/base.html" %}
+{% block title %}
+Infosum Logged Out
+{% endblock %}
+{% block body %}
     <h2>You have been logged out</h2>
     <small>
             <a href="/">Home</a>
@@ -8,4 +11,8 @@
     <small>
         <a href="{%url 'users-login'%}">Log in again</a>
     </small>
+{% endblock %}
+{% block sidebar %}
+<h1 style="text-align:center;">Login</h1>
+<p style="text-align:center;">for access to Topics</p>
 {% endblock %}

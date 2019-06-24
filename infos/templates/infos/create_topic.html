@@ -1,0 +1,78 @@
+{% extends "infos/base.html" %}
+{% load crispy_forms_tags %}
+{%block bootstrap%}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+{%endblock%}
+{% block title %}
+Create Topic in Infosum
+{% endblock %}
+{% block navbar %}
+    <div class="search">
+            <form action="/search/topics/" method="post">
+                <input type="text" placeholder="Search Topic" name="search" id="search-bar">
+                <button type="submit">Submit</button>
+            </form>
+    </div>  
+{% endblock %}
+{% block sidebar %}
+    {% if user.is_authenticated %}
+        <div class="profile-sidebar">
+            <div class="author">
+                <p>{{user.username}}</p>
+                <div class="image-cropper">
+                    <img src='{{user.profile.image.url}}' class="profile-pic">
+                </div>
+            </div>
+            <div class="rect" id="sidebar-inbox" onclick="
+            window.location.href='/users/profile/inbox/'
+            ">Inbox<br>
+                <div class="red-circle">
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
+                </div>
+            </div>
+            <div id="sidebar-topics">
+                    Top Topics:
+                    <br>
+                    <div class="rect" onclick="window.location.href = 
+                    '/Topic/{{user.profile.topic1.id}}/?page=1'">{{user.profile.topic1.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic2.id}}/?page=1'">{{user.profile.topic2.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic3.id}}/?page=1'">{{user.profile.topic3.name}}</div>
+                </div>
+            <div class="rect" id="create-topic" onclick=
+            "window.location.href = '/Topics/create/'">
+            Create Topic</div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block body %}
+<form method="POST" action="/Topics/create/" enctype="multipart/form-data">
+    {{ form.non_field_errors }}
+    {% csrf_token %}
+    {{infoform|crispy}}
+    <p>In Infosum, you can create Topics with different opinions reflecting 
+        real opinions about a topic<br> so that users can pick which opinion they 
+        agree with and explain why</p>
+    <div class="opinions">
+        <p>How Many Opinions?</p>
+        <input type="checkbox" id="Check0" value="0" 
+        onclick="selectOnlyThis(this.id)" /> 0
+        <br>
+        <input type="checkbox" id="Check1" value="1" 
+        onclick="selectOnlyThis(this.id)" /> 1
+        <br>
+        <input type="checkbox" id="Check2" value="2" 
+        onclick="selectOnlyThis(this.id)" /> 2
+        <br>
+        <input type="checkbox" id="Check3" value="3" 
+        onclick="selectOnlyThis(this.id)" /> 3
+        <div class="fields">
+            
+        </div>
+    </div>
+    <input type="submit" value="Create Topic" style="margin-bottom:30px;">
+</form>
+{% endblock %}

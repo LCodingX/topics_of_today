@@ -1,0 +1,95 @@
+{% extends "infos/base.html" %}
+{% block title %}
+Searching Infosum
+{% endblock %}
+{% block navbar %}
+    <div class="search">
+            <form action="/search/all/" method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Search Infosum" name="search" id="search-bar">
+                <button type="submit">Submit</button>
+            </form>
+    </div>  
+{% endblock %}
+{% block body %}
+{% if not topicresults and not postresults %}
+Not Found
+{% else %}
+Topics:
+{% for topic in topicresults %}
+<div class="listpost">
+    <div class="listpostauthor">
+                <p>{{topic.author.username}}</p>
+                <div class="small-image-cropper">
+                    <img src='{{topic.image.url}}' class="profile-pic">
+                </div>
+                <small style="display:block;">
+                    on {{topic.date_created|date:"M/d H:m"}}
+                </small>
+    </div>
+    <div class="listpostbody">
+        <h1><a href="/Topic/{{post.id}}/">{{topic.name}}</a></h1>
+        <br>
+        <p>{{topic.description}}</p>
+    </div>
+</div>
+{% endfor %}
+<br>
+Posts:
+{% for post in postresults %}
+<div class="listpost">
+    <div class="listpostauthor">
+                <p>{{post.author.username}}</p>
+                <div class="small-image-cropper">
+                    <img src='{{post.author.profile.image.url}}' class="profile-pic">
+                </div>
+                <small style="display:block;">
+                    on {{post.date_created|date:"M/d H:m"}}
+                </small>
+    </div>
+    <div class="listpostbody">
+        <h1><a href="/Post/{{post.id}}/">{{post.title}}</a></h1>
+        <br>
+        <p>{{post.content}}</p>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}
+{% block sidebar %}
+    {% if user.is_authenticated %}
+        <div class="profile-sidebar">
+            <div class="author">
+                <p>{{user.username}}</p>
+                <div class="image-cropper">
+                    <img src='{{user.profile.image.url}}' class="profile-pic">
+                </div>
+            </div>
+            <div class="rect" id="sidebar-inbox" onclick="
+            window.location.href='/users/profile/inbox/'
+            ">Inbox<br>
+                <div class="red-circle">
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
+                </div>
+            </div>
+            <div id="sidebar-topics">
+                Your Top Topics:
+                <br>
+                <div class="rect" onclick="window.location.href = 
+                '/Topic/{{topic1.id}}/?page=1'">{{user.profile.topic1.name}}</div>
+                <br>
+                <div class="rect" onclick=
+                "window.location.href = '/Topic/{{user.profile.topic2.id}}/?page=1'">{{user.profile.topic2.name}}</div>
+                <br>
+                <div class="rect" onclick=
+                "window.location.href = '/Topic/{{user.profile.topic3.id}}/?page=1'">{{user.profile.topic3.name}}</div>
+            </div>
+            <div class="rect" id="create-topic" onclick=
+            "window.location.href = '/Topics/create/'">
+            Create Topic</div>
+        </div>
+    {% else %}
+    <h1 style="text-align:center;">Login</h1>
+    <p style="text-align:center;">for access to Infosum</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "infos/base.html" %}
+{% block navbar %}
+    <div class="search">
+            <form action="/search/in/{{topic.id}}/" method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Search Posts" name="search" id="search-bar">
+                <button type="submit">Submit</button>
+            </form>
+    </div>  
+{% endblock %}
+{% block sidebar %}
+    {% if user.is_authenticated %}
+        <div class="profile-sidebar">
+            <div class="author">
+                <p>{{user.username}}</p>
+                <div class="image-cropper">
+                    <img src='{{user.profile.image.url}}' class="profile-pic">
+                </div>
+            </div>
+            <div class="rect" id="sidebar-inbox" onclick="
+            window.location.href='/users/profile/inbox/'
+            ">Inbox<br>
+                <div class="red-circle">
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
+                </div>
+            </div>
+            <div id="sidebar-topics">
+                    Your Top Topics:
+                    <br>
+                    <div class="rect" onclick="window.location.href = 
+                    '/Topic/{{topic1.id}}/?page=1'">{{topic1.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{topic2.id}}/?page=1'">{{topic2.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{topic3.id}}/?page=1'">{{topic3.name}}</div>
+                </div>
+            <div class="rect" id="create-post" onclick=
+            "window.location.href = '/Posts/create/?topic={{topic.id}}'">
+            Create Post</div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block body %}
+<div class="listpost" style="max-height:400px;">
+        <div class="listpostauthor">
+                    <p>{{topic.author.username}}</p>
+                    <div class="image-cropper" style="margin: 0 auto;">
+                        <img src='{{topic.image.url}}' class="profile-pic" style="margin: 0 auto;margin-left:-25px;">
+                    </div>
+                    <small style="display:block;">
+                        on {{topic.date_created|date:"M/d H:m"}}
+                    </small>
+        </div>
+        <div class="listpostbody">
+            <a href="/Field/{{topic.field.id}}">Back to {{topic.field.name}}</a>
+            <h1>{{topic.name}}</h1>
+            <br>
+            <p><strong>{{topic.views}} views.</strong> {{topic.description}}</p>
+            <hr style="margin:0px;padding:0px;margin-bottom:30px;">
+            {% if topic.opinions.desc1 %}
+            <strong>Opinions:</strong>
+            <div>
+                <div class="circle" style="float:left;" id="opinion1">
+                    <div class="innercircle"><p>1</p></div>
+                </div>
+                <p style="float:left;">{{topic.opinions.desc1}}</p>
+            </div>
+            {% endif %}
+            {% if topic.opinions.desc2 %}
+            <div style="margin-top:40px;">
+                    <div class="circle" style="float:left;" id="opinion2">
+                        <div class="innercircle"><p>2</p></div>
+                    </div>
+                    <p style="float:left;">{{topic.opinions.desc2}}</p>
+                </div>
+            {% endif %}
+            {% if topic.opinions.desc3 %}
+            <div style="margin-top: 40px;">
+                    <div class="circle" style="float:left;" id="opinion3">
+                        <div class="innercircle"><p>3</p></div>
+                    </div>
+                    <p style="float:left;">{{topic.opinions.desc3}}</p>
+                </div>
+            {% endif %}
+        </div>
+</div>
+{% if topic.posts.all.count == 0 %}
+<p>Empty Topic Here, Folks</p>
+{%endif%}
+{% for post in posts %}
+<div class="listpost">
+    <div class="listpostauthor">
+                <p>{{post.author.username}}</p>
+                <div class="small-image-cropper">
+                    <img src='{{post.author.profile.image.url}}' class="profile-pic">
+                </div>
+                <small style="display:block;">
+                    on {{post.date_created|date:"M/d H:m"}}
+                </small>
+    </div>
+    <div class="listpostbody">
+        <h3><a href="/Post/{{post.id}}/">{{post.title}}</a></h3>    
+        <div>
+                    <div class="circle" style="float:left;" id="opinion1">
+                        <div class="innercircle"><p>{{post.opinion|add:"1"}}</p></div>
+                    </div>
+                    <p style="float:left;">
+                    {% if post.opinion == -1 %}
+                    None
+                    {% elif post.opinion == 0 %}
+                        <p>{{topic.opinions.desc1}}</p>
+                    {% elif post.opinion == 1 %}
+                        <p>{{topic.opinions.desc2}}</p>
+                    {% elif post.opinion == 2 %}
+                        <p>{{topic.opinions.desc3}}</p>
+                    {% endif %}
+                    </p>
+                </div>
+        <br>
+        <hr style="margin-top:5px;padding:0px;">
+        <strong style="margin-top:5px;">{{post.likes.count}} Likes</strong>
+        <p>{{post.content|truncatewords:30}}</p>
+    </div>
+</div>
+{% endfor %}
+{% if posts.has_previous %}
+<strong style="float: left;">
+    <a href="?page={{ posts.previous_page_number }}">Previous</a>
+</strong>
+{% endif %}
+{% if posts.has_next %}
+<strong style="float: right;">
+    <a href="?page={{ posts.next_page_number }}">Next</a>
+</strong>
+{% endif %}
+{% endblock %}

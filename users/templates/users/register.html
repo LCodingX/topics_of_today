@@ -1,10 +1,10 @@
-{% extends "users/base.html" %}
+{% extends "infos/base.html" %}
 {% load crispy_forms_tags %}
-{% block toptxt %}
-Register
+{% block bootstrap %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 {% endblock %}
-{% block bod %}
-        <form action="/users/register/" method="post" class="usersform">
+{% block body %}
+        <form action="/users/register/" method="post">
             {{ form.non_field_errors }}
             {% csrf_token %}
             {{form|crispy}}
@@ -14,4 +14,8 @@ Register
                 <a href="{%url 'users-login'%}">Already have an account?</a>
             </small>
         </form>
+{% endblock %}
+{% block sidebar %}
+<h1 style="text-align:center;">Login</h1>
+    <p style="text-align:center;">for access to Topics</p>
 {% endblock %}

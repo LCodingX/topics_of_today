@@ -1,0 +1,69 @@
+{% extends "infos/base.html" %}
+{% block navbar %}
+    <div class="search">
+            <form action="/search/topics/" method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Search Topics" name="search" id="search-bar">
+                <button type="submit">Submit</button>
+            </form>
+    </div>  
+{% endblock %}
+{% block body %}
+<div class="listoftopics">
+{% for topic in topics %}
+<div class="listtopic">
+    <div class="listtopicauthor">
+        <p>Created by <br> {{topic.author.username}}</p>
+        <div class="image-cropper" style="margin: 0 auto;">
+            <img src='{{topic.image.url}}' class="profile-pic">
+        </div>
+    </div>
+    <div class="listtopicbody">
+        <a href="/Topic/{{topic.id}}/?page=1"><h1 style="text-align:center;">{{topic.name}}</h1></a>
+        <hr>
+        <p>{{topic.description|truncatewords:50}}</p>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% if topics.has_previous %}
+        <strong style="float:left;width:200px;"><a style="float:left" href="?page={{topics.previous_page_number}}">Previous</a></strong>
+    {% endif %}
+    {% if topics.has_next %}
+        <strong style="float:right;width:50px;"><a style="float:right" href="?page={{topics.next_page_number}}">Next</a></strong>
+    {% endif %}
+{% endblock %}
+{% block sidebar %}
+    {% if user.is_authenticated %}
+        <div class="profile-sidebar">
+            <div class="author">
+                <p>{{user.username}}</p>
+                <div class="image-cropper">
+                    <img src='{{user.profile.image.url}}' class="profile-pic">
+                </div>
+            </div>
+            <div class="rect" id="sidebar-inbox" onclick="
+            window.location.href='/users/profile/inbox/'
+            ">Inbox<br>
+                <div class="red-circle">
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
+                </div>
+            </div>
+            <div id="sidebar-topics">
+                    Your Top Topics:
+                    <br>
+                    <div class="rect" onclick="window.location.href = 
+                    '/Topic/{{user.profile.topic1.id}}/?page=1'">{{user.profile.topic1.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic2.id}}/?page=1'">{{user.profile.topic2.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic3.id}}/?page=1'">{{user.profile.topic3.name}}</div>
+                </div>
+                <div class="rect" id="create-topic" onclick=
+                "window.location.href = '/Topics/create/'">
+                Create Topic</div>
+        </div>
+    {% endif %}
+{% endblock %}

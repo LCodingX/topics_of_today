@@ -14,6 +14,21 @@
             </div>
         </form>
 {% endblock %}
+{% block navbar %}
+    <div class="search">
+            <form action="/search/users/{{user.id}}" method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Search Your Posts" name="search" id="search-bar" style="height:32px;">
+                <button type="submit">Submit</button>
+            </form>
+    </div>  
+
+<style>
+    .nav-a {
+        padding-top: 0px;
+    }
+</style>
+{% endblock %}
 {% block sidebar %}
     {% if user.is_authenticated %}
         <div class="profile-sidebar">
@@ -23,18 +38,25 @@
                     <img src='{{user.profile.image.url}}' class="profile-pic">
                 </div>
             </div>
-            <div class="rect" id="sidebar-inbox">Inbox<br>
+            <div class="rect" id="sidebar-inbox" onclick="
+            window.location.href='/users/profile/inbox/'
+            ">Inbox<br>
                 <div class="red-circle">
-                    <div class="inner-circle"><p>0</p></div>
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
                 </div>
             </div>
-            <div class="rect" id="sidebar-topics">
-                Top Topics:<br>
-                Politics<br>
-                Technology<br>
-                Science
+            <div id="sidebar-topics">
+                    Your Top Topics:
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic1.id}}/?page=1'">{{user.profile.topic1.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic2.id}}/?page=1'">{{user.profile.topic2.name}}</div>
+                    <br>
+                </div>
+            <div class="rect" onclick=
+            "window.location.href = '/Topic/{{user.profile.topic2.id}}/?page=1'">{{user.profile.topic3.name}}</div>
             </div>
-            <div class="rect" id="create-topic">Create Topic</div>
-        </div>
     {% endif %}
 {% endblock %}

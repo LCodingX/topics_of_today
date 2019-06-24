@@ -20,7 +20,6 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ["image"]
-
 def register(request):
     if request.method == "GET":
         form = UserForm()
@@ -31,7 +30,8 @@ def register(request):
             username = form.cleaned_data.get('username')
             messages.success(request, f"Register user {username}")
             return redirect('users-login')
-    return render(request, 'users/register.html', {'form': form, "topmsg": 'Register', "title": "Register"})
+    return render(request, 'users/register.html', {'form': form, 
+    "topmsg": 'Register', "title": "Infosum Register"})
 
 @login_required
 def profile(request):
@@ -56,7 +56,21 @@ def profile(request):
             instance=request.user.profile
             )
     context = {
+        'title': "Infosum Profile",
         "u_form": uform,
         "p_form": pform
     }
     return render(request, "users/profile.html", context)
+
+@login_required
+def inbox(request):
+    if request.method=="POST":
+        request.user.profile.alerts.all().delete()
+        return redirect("/users/profile/inbox/")
+    notifications = request.user.profile.alerts.all()
+    print(notifications)
+    context = {
+        "title": "Infosum Title",
+        "notifications": notifications
+    }
+    return render(request, "users/inbox.html", context)

@@ -1,7 +1,17 @@
 {% extends "infos/base.html" %}
+{% load crispy_forms_tags %}
+{% block navbar %}
+    <div class="search">
+            <form action="/search/topics/" method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Search Topics" name="search" id="search-bar">
+                <button type="submit">Submit</button>
+            </form>
+    </div>  
+{% endblock %}
 {% block body %}
-<div class="post wrapper">
-    <div class="post-author">
+<div class="bigpost">
+    <div class="bigpost-author">
         <p>{{post.author.username}}</p>
         <small>{{post.author.email}}</small>
         <div class="image-cropper">
@@ -11,11 +21,77 @@
             Created on {{post.date_created}}
         </small>
     </div>
-    <div class="post-title">
-        <h1>{{post.title}}</h1>
+    <div class="bigpost-content">
+        <a href="/Topic/{{post.topic.id}}/">Back to {{post.topic.name}}</a>
+        <h1 style="text-align:center;">{{post.title}}</h1>
+        <div style="float:left">
+            <div class="circle">
+                <div class="innercircle"><p>{{post.opinion|add:"1"}}</p></div>
+            </div>
+        </div>
+        <p style="float:left;margin:0px;">
+            {% if post.opinion == -1 %}
+                None
+                {% elif post.opinion == 0 %}
+                    <p>{{post.topic.opinions.desc1}}</p>
+                {% elif post.opinion == 1 %}
+                    <p>{{post.topic.opinions.desc2}}</p>
+                {% elif post.opinion == 2 %}
+                    <p>{{post.topic.opinions.desc3}}</p>
+                {% endif %}
+            </p>
         <br>
+        {%if post.author.id == user.id%}
+        <button type="submit" form="deleteform" class="deletepost" value="Submit" onclick=
+        "window.location.href='/delete/post/{{post.id}}'"><img src=
+            "/media/redx.png" style="width: 25px;height: 25px;">
+            </button>
+            <button type="submit" form="deleteform" class="deletepost" value="Submit" onclick="window.location.href='update/'">
+                <img src=
+                "/media/pencil.png" style="width: 25px;height: 25px;">
+                </button>
+        {%endif%}
+        <div id="likebutton" style="float:left;margin-top:20px;'">
+            <button style="display:none;" id="like" onclick="window.location.href='/like/post/{{post.id}}/'">Like</button>
+            {% for like in user.profile.likes.all %}
+                {% if like.post == post %}
+                <button id="unlike" onclick="window.location.href='/unlike/post/{{post.id}}/'">Unlike</button>
+                {{break}}
+                {% endif %}
+            {% endfor %}
+            <script>
+            if ($("#unlike").length == 0) {
+                $("#like").css("display", "block")
+            }
+            </script>
+            
+        </div>
+        <strong>{{post.likes.count}} Likes</strong>
+        <hr>
         {{post.content}}
+        <hr>
+        {% for image in post.images.all %}
+            <img style="width:{{image.width_x}};height:{{image.width_y}}" src="/media/{{image.image}}">
+        {% endfor %}
     </div>
+</div>
+<div class="comments">
+    <form action="/Comment/{{post.id}}/" method="POST">
+        {% csrf_token %}
+        {{commentform|crispy}}
+        <input type="submit" value="submit">
+    </form>
+    {% for comment in post.comments.all %}
+    <div class="comment">
+        <div class="commentauthor">
+            <p style="text-align:center; margin: 0px;">{{comment.author.username}}</p>
+            <div class="small-image-cropper" style="margin: 0 auto;">
+                <img src='{{comment.author.profile.image.url}}' style="float:left;" class="profile-pic">
+            </div>
+        </div>
+        {{comment.comment}}
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}
 {% block sidebar %}
@@ -27,18 +103,34 @@
                     <img src='{{user.profile.image.url}}' class="profile-pic">
                 </div>
             </div>
-            <div class="rect" id="sidebar-inbox">Inbox<br>
+            <div class="rect" id="sidebar-inbox" onclick="
+            window.location.href='/users/profile/inbox/'
+            ">Inbox<br>
                 <div class="red-circle">
-                    <div class="inner-circle"><p>0</p></div>
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
                 </div>
             </div>
-            <div class="rect" id="sidebar-topics">
-                Top Topics:<br>
-                Politics<br>
-                Technology<br>
-                Science
-            </div>
-            <div class="rect" id="create-topic">Create Topic</div>
+            <div id="sidebar-topics">
+                    Top Topics:
+                    <br>
+                    <div class="rect" onclick="window.location.href = 
+                    '/Topic/{{topic1.id}}/?page=1'">{{topic1.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{topic2.id}}/?page=1'">{{topic2.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{topic3.id}}/?page=1'">{{topic3.name}}</div>
+                </div>
+                {% if user == post.author %}
+                <div class="rect" id="create-topic" onclick=
+                "window.location.href = '/upload/postimg/{{post.id}}'">
+                Upload Image</div>
+                {% else %}
+                <div class="rect" id="create-topic" onclick=
+                "window.location.href = '/Posts/create/?topic={{post.topic_id}}'">
+                Create Post</div>
+                {% endif %}
         </div>
     {% endif %}
 {% endblock %}

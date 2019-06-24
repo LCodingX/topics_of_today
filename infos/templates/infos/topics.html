@@ -1,32 +1,38 @@
 {% extends "infos/base.html" %}
 {% block navbar %}
-    <div></div>
-    <a href="/Topics" id="infos-topics" class="nav-a left">Topics</a>
-    <a href="{%url 'infos-trending'%}" id="Trending" class="nav-a left">Trending</a>
-    {% if not user.is_authenticated %}
-    <a href="{%url 'users-register'%}"  id="Register" class="nav-a right">Register</a>
-    <a href="{%url 'users-login'%}" id="Login" class="nav-a right">Login</a>
-    {% else %}
-    <a href="/users/logout"  id="Logout" class="nav-a right">Logout</a>
-    <a href="{%url 'users-profile'%}" id="Profile" class="nav-a right">Profile</a>
-    {% endif %}
     <div class="search">
-            <form action="/" method="post">
-                <input type="text" placeholder="Search..." name="search" id="search-bar">
+            <form action="/search/topics/" method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Search Topics" name="search" id="search-bar">
                 <button type="submit">Submit</button>
             </form>
     </div>  
 {% endblock %}
 {% block body %}
+<div class="listoftopics">
 {% for topic in topics %}
-    <div class="topic">
-        {{topic.name}} created on {{topic.date_created}} by {{topic.author.username}}
-        <br>
-        {% for post in topic.posts.all %}
-            {{post.author}} - {{post.title}}
-        {% endfor %}
+<div class="listtopic">
+    <div class="listtopicauthor">
+        <p>Created by <br> {{topic.author.username}}</p>
+        <div class="image-cropper" style="margin: 0 auto;">
+            <img src='{{topic.image.url}}' class="profile-pic">
+        </div>
     </div>
+    <div class="listtopicbody">
+        <a href="/Topic/{{topic.id}}/?page=1"><h1 style="text-align:center;">{{topic.name}}</h1></a>
+        <hr>
+        <p>{{topic.description|truncatewords:50}}</p>
+    </div>
+</div>
 {% endfor %}
+</div>
+{% if topics.has_previous %}
+<strong style="float:left;width:200px;"><a style="float:left" href="?page={{topics.previous_page_number}}">Previous</a></strong>
+{% endif %}
+{% if topics.has_next %}
+<strong style="float:right;width:50px;"><a style="float:right" href="?page={{topics.next_page_number}}">Next</a></strong>
+{% endif %}
+</div>
 {% endblock %}
 {% block sidebar %}
     {% if user.is_authenticated %}
@@ -37,18 +43,28 @@
                     <img src='{{user.profile.image.url}}' class="profile-pic">
                 </div>
             </div>
-            <div class="rect" id="sidebar-inbox">Inbox<br>
+            <div class="rect" id="sidebar-inbox" onclick="
+            window.location.href='/users/profile/inbox/'
+            ">Inbox<br>
                 <div class="red-circle">
-                    <div class="inner-circle"><p>0</p></div>
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
                 </div>
             </div>
-            <div class="rect" id="sidebar-topics">
-                Top Topics:<br>
-                Politics<br>
-                Technology<br>
-                Science
-            </div>
-            <div class="rect" id="create-topic">Create Topic</div>
+            <div id="sidebar-topics">
+                    Your Top Topics:
+                    <br>
+                    <div class="rect" onclick="window.location.href = 
+                    '/Topic/{{topic1.id}}/?page=1'">{{topic1.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{topic2.id}}/?page=1'">{{topic2.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{topic3.id}}/?page=1'">{{topic3.name}}</div>
+                </div>
+                <div class="rect" id="create-topic" onclick=
+                "window.location.href = '/Topics/create/'">
+                Create Topic</div>
         </div>
     {% endif %}
 {% endblock %}

@@ -1,14 +1,14 @@
-{% extends "users/base.html" %}
-{% load crispy_forms_tags %}
+{% extends "infos/base.html" %}
 {% block title %}
-<title>Login</title>
+Infosum Login
 {% endblock %}
-{% block toptxt %}
-Login
+{% load crispy_forms_tags %}
+{% block bootstrap %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 {% endblock %}
-{% block bod %}
+{% block body %}
 <div class="form-group">
-        <form action="{% url 'users-login' %}" method="post" class="loginform usersform">
+        <form action="{% url 'users-login' %}" method="post" class="loginform">
             {{ form.non_field_errors }}
             {% csrf_token %}
             {{form|crispy}}
@@ -19,4 +19,8 @@ Login
             </small>
         </form>
 </div>
+{% endblock %}
+{% block sidebar %}
+    <h1 style="text-align:center;">Login</h1>
+    <p style="text-align:center;">for access to Topics</p>
 {% endblock %}

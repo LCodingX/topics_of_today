@@ -1,0 +1,58 @@
+{% extends "infos/base.html" %}
+{% load crispy_forms_tags %}
+{% block bootstrap %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+{%endblock%}
+{% block body %}
+<form action="/users/profile/inbox/" method="POST">
+{% csrf_token %}
+<input type="submit" value="Clear Inbox" style="background-color:lightblue;">
+</form>
+
+{% for alert in notifications %}
+<div class="alert" style="border: 3px solid lightgrey; border-radius: 3px; 
+width: 100%;min-height: 50px;"
+onclick="window.location.href='{{alert.href}}'">
+    {{alert.content}}
+</div>
+{%endfor%}
+{% endblock %}
+{% block navbar %}
+    <div class="search">
+            <form action="/search/users/{{user.id}}" method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Search Your Posts" name="search" id="search-bar" style="height:32px;">
+                <button type="submit">Submit</button>
+            </form>
+    </div>  
+{% endblock %}
+{% block sidebar %}
+    {% if user.is_authenticated %}
+        <div class="profile-sidebar">
+            <div class="author">
+                <p>{{user.username}}</p>
+                <div class="image-cropper">
+                    <img src='{{user.profile.image.url}}' class="profile-pic">
+                </div>
+            </div>
+            <div class="rect" id="sidebar-inbox">Inbox<br>
+                <div class="red-circle">
+                    <div class="inner-circle"><p>{{user.profile.alerts.count}}</p></div>
+                </div>
+            </div>
+            <div id="sidebar-topics">
+                    Your Top Topics:
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic1.id}}/?page=1'">{{user.profile.topic1.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic2.id}}/?page=1'">{{user.profile.topic2.name}}</div>
+                    <br>
+                    <div class="rect" onclick=
+                    "window.location.href = '/Topic/{{user.profile.topic2.id}}/?page=1'">{{user.profile.topic3.name}}</div>
+                </div>
+            <div class="rect" id="create-topic">Create Topic</div>
+        </div>
+    {% endif %}
+{% endblock %}

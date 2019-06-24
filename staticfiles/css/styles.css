@@ -1,7 +1,22 @@
-
+html *{
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+body {
+  margin:0; padding:0;
+  min-height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-areas: "navbar navbar"
+                      "content-section all-sidebar"
+                      "footer footer";
+  grid-template-columns: 70% 30%;
+  grid-template-rows: 50px 1fr 45px;
+}
 .navbar {
+  grid-area: navbar;
+  z-index: 100;
     background-color: red;
-    width: 100%;
+    width: 99%;
     margin: 0px 0px;
     padding-left: 4em;
     left: 0px;
@@ -10,39 +25,27 @@
     height: 50px;
     position: fixed;
     display: grid;
-    grid-template-columns: 50px repeat(4, minmax(auto, 1fr)) 2fr
+    grid-template-columns: repeat(7, 1fr) 2fr;
 }
-.content-section {
-  float: left;
-  min-height: 500px;
-  max-height: 100%;
-  margin-left: 50px;
-  max-width: 72%;
-  outline: 3px solid lightgrey;
-  border-radius: 25px;
-  padding: 10px;
-  margin-top: 70px;
+.all-sidebar {
+  grid-area: all-sidebar;
+  overflow: hidden;
+  margin: 0px;
+  
 }
 .sidebar {
-  margin-right: 6em;
-  display: flex;
-    width: 15%;
-    min-height: 500px;
-    max-height: 100%;
-    margin-right: 50px;
-    float: right;
-    outline: 3px solid lightgrey;
-    margin-top: 70px;
-    border-radius: 25px;
-    padding: 10px;
-    margin-left: 25px;
+  width: 50%;
+  outline: 3px solid lightgrey;
+  max-height: 600px;
+  padding: 15px;
+  margin-top: 15px;
+  margin-left: 15px;
 }
 .search {
   float: right;
   justify-self: center;
 }
 .search button {
-  float: right;
   margin-top: 8px;
   min-width: 50px;
   padding: 6px;
@@ -52,7 +55,10 @@
   border: none;
   cursor: pointer;
 }
-
+textarea {
+  width: 100%;
+  min-height: 50px;
+}
 #search-bar {
   padding: 6px;
   border: none;
@@ -69,14 +75,10 @@
   background-color: lightgrey;
   cursor: pointer;
 }
-.right {
-    justify-content: flex-end;
-}
 .nav-a {
     justify-self: flex-start;
     font-family: 'Segoe UI', Tahoma, 'Geneva', Verdana, sans-serif;
-    padding: 15px 30px;
-    max-width: 100px;
+    padding: 15px 0px;
     text-decoration: none;
     color: white;
 }
@@ -90,32 +92,15 @@
     margin: 0 auto;
 }
 .content-section {
-    padding: 10px 20px;
-    border: 1px solid #dddddd;
-    border-radius: 3px;
-    margin-bottom: 20px;
-  }
-  ul {
-    margin: 0;
-  }
-  div.centered {
-      margin: 0 auto;
-  }
-  h1.centered {
-    margin: 0 auto;
-    font-size : 2rem;
-  }
-  .fieldWrapper {
-      padding: 5px 5px;
-  }
-  .alert {
-      width: 50%;
-      margin: 0 auto;
-  }
-  .alert.alert-danger {
-      margin: 0 auto;
-      padding: 0px 0px;
-  }
+  grid-area: content-section;
+  padding: 10px 20px;
+  border: 3px solid #dddddd;
+  border-radius: 10px;
+  min-width: 60%;
+  margin-left: 50px;
+  padding: 10px;
+  padding-bottom: 3em;
+}
   form.usersform {
     margin: 0 auto;
     width: 50%;
@@ -126,10 +111,13 @@
   .topic {
     float: top;
   }
+  #create-topic.rect {
+    align-self: center;
+  }
   .listpost {
     display: grid;
     float: top;
-    max-height: 120px;
+    max-height: 180px;
     border: 3px solid lightgrey;
     grid-template-columns: 1fr 3fr;
     overflow: hidden;
@@ -157,13 +145,26 @@
     display: none;
 }
 .profile-sidebar {
-  width: 100%;
   margin: 0 auto;
   display: grid;
   grid-template-rows: 3fr 1fr 2fr 2fr;
   justify-content: center;
   align-items: center;
   grid-row-gap: 15px;
+}
+@media screen and (max-width:700px) {
+  .profile-sidebar {
+    display: grid;
+    grid-template-columns: 3fr 1fr 2fr 2fr;
+    grid-template-rows: 1fr;
+    grid-column-gap: 15px;
+  }
+  .sidebar {
+    border: 3px solid lightgrey;
+    margin: 10px 10px; padding: 0;
+    width: 95%;
+    height: 150px;
+  }
 }
 .red-circle {
   width: 25px;
@@ -176,9 +177,15 @@
 }
 .inner-circle {
   margin-top: 15%;
+  margin: 0 auto;
+
 }
 .inner-circle p {
   color: white;
+}
+.innercircle p{
+  margin-top: 15%;
+  text-align:center;
 }
 .profile-sidebar p, .profile-sidebar small, .profile-sidebar img, .profile-sidebar .image-cropper {
   margin: 0 auto;
@@ -188,24 +195,32 @@
   align-self: start;
 }
 footer {
-  position: fixed;
+  margin:0; padding:0;
   left: 0;
+  right: 0
   bottom: 0;
   width: 100%;
   background-color: lightgrey;
   color: white;
   text-align: center;
-  height:  50px;
+  margin: 0px;
+  grid-area: footer;
 }
 footer p {
   color: black
 }
-.post-author {
-  justify-content: flex-start;
+.bigpost {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  max-width: 100%;
+  min-width: 300px;
+  padding-bottom: 100px;
 }
-.post-title {
-  margin: 0 auto;
-  align-items: flex-start;
+.bigpost-author p {
+  margin: 0px;
+}
+.bigpost-content {
+  margin-left: 1em;
 }
 .profile-form {
   display: flex;
@@ -219,10 +234,113 @@ footer p {
 .listpostauthor p{
   margin: 0px;
 }
+.listpostauthor *{
+  margin: 0 auto;
+  text-align: center;
+}
 .listpostbody h1 {
   text-align: center;
 }
 .listpostbody * {
   margin: 0px;
   padding: 0.1em;
+}
+.listpostbody {
+  margin-left: 1em;
+  margin-bottom: 30px;
+}
+.listoftopics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 2em;
+}
+@media screen and (max-width: 1175px) {
+  .listoftopics {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 2em;
+  }
+}
+.listtopic {
+  border-radius: 10px;
+  border: 3px solid lightgrey;
+  min-width: 50%;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+}
+.listtopicauthor {
+  padding: 1em;
+}
+.listtopicauthor p {
+  margin: 0;
+  padding: 1em;
+  text-align: center;
+}
+.comments {
+  max-width: 100%;
+  min-width: 300px;
+  padding-bottom: 30px;
+}
+.comment {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  padding: 5px;
+  border: 3px solid lightgrey;
+  border-radius: 10px;
+}
+.alert:hover {
+  background-color: lightgrey;
+}
+.deletepost {
+  float:right;
+}
+.circle {
+  background-color: orange;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+#likebutton {
+  width: 14%;
+}
+.listfield {
+  border: 3px solid lightgrey;
+  border-radius: 5px;
+  text-align: center;
+  margin: 0 auto;
+}
+.bigpost-author *{
+  text-align: center;
+  margin: 0 auto;
+}
+@media screen and (max-width: 700px) {
+  body {
+    margin:0; padding:0;
+    min-height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-areas: "navbar navbar"
+                          "all-sidebar all-sidebar"
+                        "content-section content-section"
+                        "footer footer";
+    grid-template-columns: 70% 30%;
+    grid-template-rows: 50px 200px 1fr 45px;
+    grid-column-gap: 1em;
+    }
+    .nav-a {
+      font-size: 10px;
+    }
+    #search-bar {
+      max-width: 75px;
+    }
+    .search button {
+      float: left;
+    }
+    .content-section {
+      padding: 0px;
+      padding-bottom: 48px;
+      width: 90%;
+      margin: 0 auto;
+    }
 }
